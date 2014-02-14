@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="utf-8">
+<body>
+<style>
+table{
+	margin: auto;
+	border: 1px solid #699
+}
+</style>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+  <script>
+
+ 
+var text = d3.select("body").append("h1");
+text.text("Unemployment Rates for States");
+var text = d3.select("body").append("h1");
+text.text("Unemployment Rates for States");
+
+var cap = d3.select("body").append("caption");
+cap.text("Caption!");
+  
+  d3.text("unemp_states_us_nov_2013.tsv", "text/tsv", function(unparsedData)
+  {
+	var data = d3.tsv.parseRows(unparsedData);
+	var table = d3.select("body").append("table");
+		
+	table.attr("width", 1000)
+		 .style("cursor", "n-resize");
+
+	var thead = table.append("thead")
+					.style("background-color", "#c4c4c4");
+
+	var hrows = thead.selectAll("th")
+  					.data(data[0])
+					.enter()
+  					.append("th")
+ 					.text(function(d) { return d })
+				
+	var tbody = table.append("tbody");
+	var rows = tbody.selectAll("tr")
+      				.data(data.slice(1))
+      				.enter()
+  					.append("tr")
+  					.style("background-color", function(d, i) {
+					       if (i%2===0){return "#fff";}else{return "#c4c4c4";}
+					      })
+  					.on("mouseover", function(){
+					    d3.select(this).style("background-color", "yellow");
+					    })
+  					.on("mouseout", function(d,i){ 
+							     d3.select(this).style("background-color", function(d2,j) {
+							        if (i % 2 === 0){
+							           return "#fff";
+							         }
+							        else {
+							           return "#c4c4c4";
+							         }
+							    })
+							 });
+							
+	
+	var cells = rows.selectAll("td")
+      .data(function(row) { return row; })
+      .enter()
+      .append("td")
+      .text(function(d,i) { console.log(i); return d; });
+
+	
+	});
+
+  </script> 
+</body>
+
+</html>

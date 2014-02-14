@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="utf-8">
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+  <script>
+
+ 
+var text = d3.select("body").append("h1");
+text.text("Hello!");
+
+var cap = d3.select("body").append("caption");
+cap.text("Caption!");
+  
+  d3.text("unemp_states_us_nov_2013.tsv", "text/tsv", function(unparsedData)
+  {
+	var data = d3.tsv.parseRows(unparsedData);
+	var table = d3.select("body").append("table");
+		d3.select("table").attr("width", 1000);
+		d3.select("table").style("cursor", "n-resize");
+	var thead = d3.select("table").append("thead");
+	var hrows = thead.selectAll("th")
+  					.data(data[0])
+					.enter()
+  					.append("th")
+ 					.text(function(d) { return d })
+					.on("click", function(d,i){
+											console.log("TESTING")
+											console.log(d)
+											if(d == "State"){
+											d3.selectAll("tr").sort(function(a, b) {
+											  return d3.ascending(a[1], b[1]);
+											     })
+										    }
+										
+											if(d == "Rate"){
+											d3.selectAll("tr").sort(function(a, b) {
+											  return d3.ascending(a[2], b[2]);
+											     })
+										    }
+											d3.selectAll("tr").style("background-color", function(d, i) {
+												console.log("testing" + d,i)
+											       if (i%2 == 0){return "#fff";}else{return "#c4c4c4";}
+											      })
+										
+										});
+					
+	var tbody = d3.select("table").append("tbody");
+
+var holdcolor = d3.select(this).indexOf(); 
+
+    var rows = tbody.selectAll("tr")
+      				.data(data)
+    				.enter()
+      				.append("tr")
+					.style("background-color", function(d, i) {
+					       if (i%2===0){return "#fff";}else{return "#c4c4c4";}
+					      })
+					.on("mouseover", function(){
+						console.log(holdcolor)
+					         d3.select(this).style("background-color", "yellow");})
+					.on("mouseout", function(d,i){ //correct index is passed here!
+	console.log(i)
+							     d3.select(this).style("background-color", function(d2,j) {
+							                            //d2 will be the same as d, but j will always be 0
+							                            //since d3.select(this) only has one element
+							        if (i % 2 === 0){
+							           return "#fff";
+							         }
+							        else {
+							           return "#c4c4c4";
+							         }
+							    } )
+							 });
+							
+							/*on("mouseout", function(d,i){ //correct index is passed here!
+			console.log(i)
+									     d3.select(this).style("background-color", function(d2,j) {
+									                            //d2 will be the same as d, but j will always be 0
+									                            //since d3.select(this) only has one element
+									        if (i % 2 === 0){
+									           return "#fff";
+									         }
+									        else {
+									           return "#c4c4c4";
+									         }
+									    } )
+									 });*/
+									
+			/*				
+	var sorted = tbody.selectAll("tr").sort(function(a, b) {
+							  return d3.ascending(a[1], b[1]);
+							});
+						*/	
+    var cells = rows.selectAll("td")
+      				.data(function(row,k) {
+          							return d3.range(Object.keys(row).length).map(
+													function(column, i) {
+														if(row[Object.keys(row)[i]] != "Rank")
+														if(row[Object.keys(row)[i]] != "State")
+														if(row[Object.keys(row)[i]] != "Rate")
+														return row[Object.keys(row)[i]];
+          												});
+      									 })
+    				.enter()
+      				.append("td")
+      				.text(function(d, i) { return d; });
+	
+	});
+
+  </script> 
+</body>
+
+</html>
