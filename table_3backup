@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="utf-8">
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+  <script>
+
+ /*
+var text = d3.select("body").append("h1");
+text.text("Hello!");
+
+var cap = d3.select("body").append("caption");
+cap.text("Caption!");
+*/
+  
+  d3.text("unemp_states_us_nov_2013.tsv", "text/tsv", function(unparsedData)
+  {
+
+  	function ChangeClassofRows(){
+  		d3.select("table").append("tbody").selectAll("tr").selectAll("td").attr('class', function(d,i){ return "col_" + i; })
+  	}
+
+  	
+  	var sorted_asc = 0; 
+  	var initial_sort_needed = 0; // Initial_sort is needed.
+	var data = d3.tsv.parseRows(unparsedData);
+	var table = d3.select("body").append("table");
+
+		d3.select("table").attr("width", 1000);
+		d3.select("table").style("cursor", "n-resize");
+
+		table.selectAll("caption")
+		.data(["Unemployment Rates for States","Monthly Rankings","Seasonally Adjusted","Dec. 2013"])
+		.enter()
+		.append("caption")
+		.text(function(d) { return d })
+
+	var thead = d3.select("table").append("thead");
+
+	function initial_sort(){
+		d3.selectAll("tr").sort(function(a, b) {
+										if(a[2]-b[2] != 0)
+  											return a[2]-b[2];
+										else
+											return d3.ascending(a[1], b[1]);
+											})}
+	
+	var hrows = thead.selectAll("th")
+  					.data(data[0])
+					.enter()
+  					.append("th")
+ 					.text(function(d) { return d })
+					.on("click", 
+						function(d,i){
+							if(sorted_asc == 0){
+								if(d == "State"){
+									d3.selectAll("tr").sort(function(a, b) {
+										return d3.ascending(a[1], b[1]);
+										})}
+								if(d == "Rate"){
+									d3.selectAll("tr").sort(function(a, b) {
+										if(a[2]-b[2] != 0)
+  											return a[2]-b[2];
+										else
+											d3.ascending(a[1], b[1]);
+											})}
+								ChangeClassofRows();
+								d3.selectAll('td.col_0')
+                    				.style('background-color',function(d, i) {
+					      				if (i%2===0){return "#fff";}else{return "#c4c4c4";}});
+                    			d3.selectAll('td.col_1')
+                    				.style('background-color',function(d, i) {
+					       				if (i%2===0){return "#fff";}else{return "#c4c4c4";}
+					      			});
+                    			d3.selectAll('td.col_2')
+                    				.style('background-color',function(d, i) {
+					       				if (i%2===0){return "#fff";}else{return "#c4c4c4";}
+					      			});
+					      			sorted_asc = 1; 
+					      			d3.select("table").style("cursor", "n-resize");
+                    		}
+                    		else{
+                    			if(d == "State"){
+									d3.selectAll("tr").sort(function(a, b) {
+										return d3.descending(a[1], b[1]);
+										})}
+								if(d == "Rate"){
+									d3.selectAll("tr").sort(function(a, b) {
+										if(b[2]-a[2] != 0)
+  											return b[2]-a[2];
+										else
+											d3.descending(a[1], b[1]);
+											})}
+								ChangeClassofRows();
+								d3.selectAll('td.col_0')
+                    				.style('background-color',function(d, i) {
+					      				if (i%2===0){return "#fff";}else{return "#c4c4c4";}});
+                    			d3.selectAll('td.col_1')
+                    				.style('background-color',function(d, i) {
+					       				if (i%2===0){return "#fff";}else{return "#c4c4c4";}
+					      			});
+                    			d3.selectAll('td.col_2')
+                    				.style('background-color',function(d, i) {
+					       				if (i%2===0){return "#fff";}else{return "#c4c4c4";}
+					      			});
+					      			sorted_asc = 0; 
+					      			d3.select("table").style("cursor", "s-resize");
+
+                    		}
+										
+										});
+					
+	var tbody = d3.select("table").append("tbody");
+
+	var holdcolor = d3.select(this).indexOf(); 
+
+    var rows = tbody.selectAll("tr")
+      				.data(data.slice(1))
+      				.enter()
+  					.append("tr")
+  					.style("background-color", function(d, i) {
+					       if (i%2===0){return "#fff";}else{return "#c4c4c4";}
+					      })
+  					.on("mouseover", function(){
+					    d3.select(this).style("background-color", "yellow");
+					    })
+  					.on("mouseout", function(d,i){ 
+							     d3.select(this).style("background-color", function(d2,j) {
+							        if (i % 2 === 0){
+							           return "#fff";
+							         }
+							        else {
+							           return "#c4c4c4";
+							         }
+							    })
+							 });
+							
+	
+	var cells = rows.selectAll("td")
+      .data(function(row) { return row; })
+      .enter()
+      .append("td")
+      .text(function(d,i) {  return d; })
+      .attr('class', function(d,i){ return "col_" + i; })
+      .on('mouseover', function(d,i){
+               d3.selectAll('td.col_' + i).style('background-color', 'yellow');
+            })
+      .on('mouseout', function(d,i){
+                    d3.selectAll('td.col_' + i).style('background-color', null);
+							    
+
+            })
+
+	
+	
+	// Call the initial_sort
+	
+	if(initial_sort_needed == 0){
+	initial_sort()
+	ChangeClassofRows();
+								d3.selectAll('td.col_0')
+                    				.style('background-color',function(d, i) {
+					      				if (i%2===0){return "#fff";}else{return "#c4c4c4";}});
+                    			d3.selectAll('td.col_1')
+                    				.style('background-color',function(d, i) {
+					       				if (i%2===0){return "#fff";}else{return "#c4c4c4";}
+					      			});
+                    			d3.selectAll('td.col_2')
+                    				.style('background-color',function(d, i) {
+					       				if (i%2===0){return "#fff";}else{return "#c4c4c4";}
+					      			});
+					      			sorted_asc = 0;
+					      			d3.select("table").style("cursor", "n-resize");
+					      		initial_sort_needed = 1; 	
+}
+});
+
+  </script> 
+</body>
+
+</html>

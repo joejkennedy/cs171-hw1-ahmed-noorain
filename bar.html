@@ -13,11 +13,9 @@
   </style>
 </head>
 <body>
-	<input type="range" name="points" min="0" max="50" step="1" value="50">
-	<label><input type="radio" name="order" value="state"> State</label>
-	<label><input type="radio" name="order" value="rate" checked> Rate</label>
+<label><input type="radio" name="order" value="state"> State</label>
+<label><input type="radio" name="order" value="rate" checked> Rate</label>
   <script type="text/javascript">
-
 
     var margin = {top: 50, bottom: 10, left:300, right: 40};
     var width = 900 - margin.left - margin.right;
@@ -41,41 +39,84 @@
 
       var max = d3.max(data, function(d) { return d.Rate; } );
       var min = 0;
-
       xScale.domain([min, max]);
       yScale.domain(data.map(state));
 
       var groups = g.append("g")
         .selectAll("g")
         .data(data)
-      .enter()
+        .enter()
         .append("g")
         .attr("transform", function(d, i) { return "translate(0, " + yScale(d.State) +")"; });
 
+        // STATE TEXT
+      groups.append("text")
+        .attr("x", function(d) { return  -5; })
+        .attr("y", function(d) { return bar_height/2; })
+        .text(function(d) { return d.State; })
+        .attr("text-anchor","end")
+
+      groups.append("text")
+        .attr("x", function(d,i) { return  xScale(d.Rate); })
+        .attr("y", function(d) { return bar_height/2; })
+        .text(function(d) { return d.Rate; })
+        .attr("text-anchor","end")
+        .attr("font-family", "sans-serif") 
+        .attr("font-size", "11px")
+        .attr("dy",".55em")
+        //.attr("fill", "white");
       var bars = groups
         .append("rect")
-        .attr("width", function(d) { return xScale(d.Rate); })
+        .attr("width", function(d) {  return xScale(d.Rate); })
         .attr("height", bar_height);
 
-		groups.append("text")
-		        .attr("x", function(d) { return xScale(d.Rate) - 20; })
-		        .attr("y", function(d) { return bar_height/2; })
-		        .text(function(d) { return d.Rate; })
-		
-				groups.append("text")
-				        .attr("x", function(d) { return  0 })
-				        .attr("y", function(d) { return bar_height/2; })
-				        .text(function(d) { return d.State; })
+/*
+      function initial_sort(){
+        console.log("intial_sort called")
+      d3.selectAll("text").sort(function(a, b) {
+      console.log(a.State,b.State)
+                      return d3.ascending(a.State, b.State);
+                      })
+*/
+   sortStateasc = function (a, b) {
+    //console.log(a.State,b.State)
+        return d3.ascending(a.State, b.State);
+    }
 
- d3.selectAll("input").on("change", reorder);
+    sortRatesasc = function(a, b) {
+                    //console.log(a.Rate,b.Rate)
+                    if(b.Rate-a.Rate != 0)
+                      return b.Rate - a.Rate;
+                    else
+                      return d3.descending(a.State, b.State);
+                  }
+    var color = d3.scale.linear()
+    .domain([d3.min(data, function(d) { return d.Rate }), d3.max(data, function(d) { return d.Rate })])
+                        //.domain([3.6,10.0])
+                      //.domain([0, d3.selectAll("tbody tr")[0].length-1])
+                        .interpolate(d3.interpolateRgb)
+                        .range(["orangered", "silver"]);
+  
+     var reorder = function(d,i){
+      if(i == 0){console.log("user selected state")
+        groups.sort(sortStateasc)
+        } // state
+      if(i == 1){
+        console.log("user selected rate")
+        groups.sort(sortRatesasc)
+      } // rate
+      yScale.domain(data.map(state));
+      groups
+        .transition()
+        .duration(750)
+        .delay(function(d, i) { return i * 10; })
+        .attr("id",function(d, i) { return i; })
+        .attr("transform", function(d, i) {  return "translate("+ 0 +", "+ i*16 +")"; })
+        .selectAll("rect").style("fill", function(d, i) { console.log(d.Rate,i); return color(d.Rate);})
+      }
 
-function reorder(d) { return  d }
-
-groups
-   .transition()
-   .duration(750)
-   .delay(function(d, i) { return i * 10; })
-   .attr("transform", function(d, i) { return "translate("+ 42+i +", "+ 12+i +")"; })
+    
+    d3.selectAll("input").on("change", reorder);
 
     });
   </script>
