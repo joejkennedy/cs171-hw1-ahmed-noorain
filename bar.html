@@ -40,26 +40,26 @@
       var max = d3.max(data, function(d) { return d.Rate; } );
       var min = 0;
 
-    sortStateasc = function (a, b) {
-    //console.log(a.State,b.State)
+    sortStatedesc = function (a, b) {
+    console.log("sortStateasc")
         return d3.ascending(a.State, b.State);
     }
 
-    sortRatesasc = function(a, b) {
-                    //console.log(a.Rate,b.Rate)
+    sortRatesdesc = function(a, b) {
+                    console.log("sortRatesasc")
                     if(b.Rate-a.Rate != 0)
                       return b.Rate - a.Rate;
                     else
                       return d3.descending(a.State, b.State);
                   }
 
-    sortStatedesc = function (a, b) {
-    //console.log(a.State,b.State)
+    sortStateasc = function (a, b) {
+    console.log("sortStatedesc")
         return d3.descending(a.State, b.State);
     }
 
-    sortRatesdesc = function(a, b) {
-                    //console.log(a.Rate,b.Rate)
+    sortRatesasc = function(a, b) {
+                    console.log("sortRatesdesc")
                     if(a.Rate-b.Rate != 0)
                       return  a.Rate - b.Rate;
                     else
@@ -105,22 +105,13 @@
         .append("rect")
         .attr("width", function(d) {  return xScale(d.Rate); })
         .attr("height", bar_height)
-        .style("fill", function(d, i) { console.log(d.Rate,i); return color(d.Rate);})
-
-/*
-      function initial_sort(){
-        console.log("intial_sort called")
-      d3.selectAll("text").sort(function(a, b) {
-      console.log(a.State,b.State)
-                      return d3.ascending(a.State, b.State);
-                      })
-*/
+        .style("fill", function(d, i) { return color(d.Rate);})
 
     var stateclicked = 0; 
     var rateclicked = 0; 
 
      var reorder = function(d,i){
-      if(i == 0){console.log("user selected state")
+      if(i == 0){
         if(stateclicked == 0){
         groups.sort(sortStateasc)
         stateclicked = 1; 
@@ -129,14 +120,14 @@
         stateclicked = 0; 
       }
 
-        } // state
-      if(i == 1){
+        } 
+      if(i == 1){ // Rank clicked
         if(rateclicked == 0){
-        groups.sort(sortRatesasc)
+        groups.sort(sortRatesdesc)
         rateclicked = 1; 
       }
       else{
-        groups.sort(sortRatesdesc)
+        groups.sort(sortRatesasc)
         rateclicked = 0;
       }
       } // rate
@@ -147,7 +138,7 @@
         .delay(function(d, i) { return i * 10; })
         .attr("id",function(d, i) { return i; })
         .attr("transform", function(d, i) {  return "translate("+ 0 +", "+ i*16 +")"; })
-        .selectAll("rect").style("fill", function(d, i) { console.log(d.Rate,i); return color(d.Rate);})
+        .selectAll("rect").style("fill", function(d, i) {  return color(d.Rate);})
       }
 
     
@@ -162,7 +153,7 @@
         .delay(function(d, i) { return i * 10; })
         .attr("id",function(d, i) { return i; })
         .attr("transform", function(d, i) {  return "translate("+ 0 +", "+ i*16 +")"; })
-        .selectAll("rect").style("fill", function(d, i) { console.log(d.Rate,i); return color(d.Rate);})
+        .selectAll("rect").style("fill", function(d, i) {  return color(d.Rate);})
       
 
     });

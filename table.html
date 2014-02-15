@@ -47,6 +47,19 @@ table{
 					return d3.ascending(a[1], b[1]);
 			})}
 
+
+
+	var mind = d3.min(data, function(d) { return d[2] });
+		
+	var maxd = d3.max(data.slice(1), function(d) { return d[2] });
+
+
+	var color = 
+	d3.scale.linear()
+		.domain([mind,maxd])
+		.interpolate(d3.interpolateRgb)
+	  	.range(["orangered", "silver"]);
+
 	function ChangeClassofRows(){
   		d3.select("table")
   			.append("tbody")
@@ -180,27 +193,26 @@ table{
     var width = 20
 	var height = 10
 
-	var addheader = thead
-  					.append("th")
-  					.data([["Bar"]])
- 					.text(function(d) { return "Bar"})
- 					.on("click",function(d,i){
- 						if(sorted_asc == 0){
- 							if(d == "Bar"){
-								d3.selectAll("tr").sort(function(a, b) {
-									if(a[2]-b[2] != 0)
-  										return a[2]-b[2];
-									else
-										return d3.ascending(a[1], b[1]);
-								})}
+	var addheader = 
+		thead.append("th")
+			.data([["Bar"]])
+			.text(function(d) { return "Bar"})
+			.on("click",function(d,i){
+				if(sorted_asc == 0){
+					if(d == "Bar"){
+						d3.selectAll("tr").sort(function(a, b) {
+							if(a[2]-b[2] != 0)
+								return a[2]-b[2];
+							else
+								return d3.ascending(a[1], b[1]);
+						})}
 				d3.selectAll("tr")
 					.style("background-color", function(d, i) {
 					    if (i%2===0){return "#fff";}else{return "#c4c4c4";}
 					    })
 				sorted_asc = 1; 
 				d3.select("table").style("cursor", "n-resize");
-				}
-                else{
+				}else{
 				if(d == "Bar"){
 					d3.selectAll("tr").sort(function(a, b) {
 						if(b[2]-a[2] != 0)
@@ -219,6 +231,23 @@ table{
 
     rows.insert("td")
 		.attr('class', function(d,i){ return "col_" + 3; })
+		.on('mouseover', function(d,i){
+			console.log(i)
+      			//if(i != 2){
+
+               d3.selectAll('td.col_' + 3)
+           		.style('background-color', 'yellow');
+           	//}
+      		
+            })
+      .on('mouseout', function(d,i){
+                    d3.selectAll('td.col_' + 3)
+                    .style('background-color', null);
+					d3.selectAll('td.col_' + 2)
+					.style("background-color", function(d, i) {
+						return color(d);
+					})
+				})
 	.append("svg")
    	.attr("width", 20)
    	.attr("height", 10)
@@ -228,15 +257,6 @@ table{
    	
    
 
-var mind = d3.min(data, function(d) { return d[2] });
-
-var maxd = d3.max(data.slice(1), function(d) { return d[2] });
-
-var color = 
-	d3.scale.linear()
-		.domain([mind,maxd])
-		.interpolate(d3.interpolateRgb)
-	  	.range(["orangered", "silver"]);
 
 	function initial_load(d,i){
 		
@@ -260,7 +280,7 @@ var color =
 		})
 		sorted_asc = 1; 
 		d3.select("table")
-			.style("cursor", "n-resize");
+			.style("cursor", "s-resize");
 	}
 
 	initial_load();
