@@ -39,6 +39,41 @@
 
       var max = d3.max(data, function(d) { return d.Rate; } );
       var min = 0;
+
+    sortStateasc = function (a, b) {
+    //console.log(a.State,b.State)
+        return d3.ascending(a.State, b.State);
+    }
+
+    sortRatesasc = function(a, b) {
+                    //console.log(a.Rate,b.Rate)
+                    if(b.Rate-a.Rate != 0)
+                      return b.Rate - a.Rate;
+                    else
+                      return d3.descending(a.State, b.State);
+                  }
+
+    sortStatedesc = function (a, b) {
+    //console.log(a.State,b.State)
+        return d3.descending(a.State, b.State);
+    }
+
+    sortRatesdesc = function(a, b) {
+                    //console.log(a.Rate,b.Rate)
+                    if(a.Rate-b.Rate != 0)
+                      return  a.Rate - b.Rate;
+                    else
+                      return d3.descending(a.State, b.State);
+                  }
+
+    var color = d3.scale.linear()
+    .domain([d3.min(data, function(d) { return d.Rate }), d3.max(data, function(d) { return d.Rate })])
+                        //.domain([3.6,10.0])
+                      //.domain([0, d3.selectAll("tbody tr")[0].length-1])
+                        .interpolate(d3.interpolateRgb)
+                        .range(["orangered", "silver"]);
+
+
       xScale.domain([min, max]);
       yScale.domain(data.map(state));
 
@@ -47,7 +82,8 @@
         .data(data)
         .enter()
         .append("g")
-        .attr("transform", function(d, i) { return "translate(0, " + yScale(d.State) +")"; });
+        .attr("transform", function(d, i) { return "translate(0, " + yScale(d.State) +")"; })
+        //.selectAll("rect").style("fill", function(d, i) { console.log(d.Rate,i); return color(d.Rate);});
 
         // STATE TEXT
       groups.append("text")
@@ -68,7 +104,8 @@
       var bars = groups
         .append("rect")
         .attr("width", function(d) {  return xScale(d.Rate); })
-        .attr("height", bar_height);
+        .attr("height", bar_height)
+        .style("fill", function(d, i) { console.log(d.Rate,i); return color(d.Rate);})
 
 /*
       function initial_sort(){
@@ -78,32 +115,30 @@
                       return d3.ascending(a.State, b.State);
                       })
 */
-   sortStateasc = function (a, b) {
-    //console.log(a.State,b.State)
-        return d3.ascending(a.State, b.State);
-    }
 
-    sortRatesasc = function(a, b) {
-                    //console.log(a.Rate,b.Rate)
-                    if(b.Rate-a.Rate != 0)
-                      return b.Rate - a.Rate;
-                    else
-                      return d3.descending(a.State, b.State);
-                  }
-    var color = d3.scale.linear()
-    .domain([d3.min(data, function(d) { return d.Rate }), d3.max(data, function(d) { return d.Rate })])
-                        //.domain([3.6,10.0])
-                      //.domain([0, d3.selectAll("tbody tr")[0].length-1])
-                        .interpolate(d3.interpolateRgb)
-                        .range(["orangered", "silver"]);
-  
+    var stateclicked = 0; 
+    var rateclicked = 0; 
+
      var reorder = function(d,i){
       if(i == 0){console.log("user selected state")
+        if(stateclicked == 0){
         groups.sort(sortStateasc)
+        stateclicked = 1; 
+      }else{
+        groups.sort(sortStatedesc)
+        stateclicked = 0; 
+      }
+
         } // state
       if(i == 1){
-        console.log("user selected rate")
+        if(rateclicked == 0){
         groups.sort(sortRatesasc)
+        rateclicked = 1; 
+      }
+      else{
+        groups.sort(sortRatesdesc)
+        rateclicked = 0;
+      }
       } // rate
       yScale.domain(data.map(state));
       groups
@@ -117,6 +152,18 @@
 
     
     d3.selectAll("input").on("change", reorder);
+    d3.selectAll("input").on("click", reorder);
+    // ON LOAD: 
+    groups.sort(sortRatesasc)
+    yScale.domain(data.map(state));
+    groups
+        .transition()
+        .duration(750)
+        .delay(function(d, i) { return i * 10; })
+        .attr("id",function(d, i) { return i; })
+        .attr("transform", function(d, i) {  return "translate("+ 0 +", "+ i*16 +")"; })
+        .selectAll("rect").style("fill", function(d, i) { console.log(d.Rate,i); return color(d.Rate);})
+      
 
     });
   </script>
