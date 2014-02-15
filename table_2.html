@@ -82,23 +82,7 @@ text.text("Dec. 2013");
       .append("td")
       .text(function(d,i) { console.log(i); return d; })
       .attr('class', function(d,i){ return "col_" + i; })
-      /*.style("background-color", function(d2,i) {
-      	if(moused == 1){
-      		console.log("Will set bgc for" + i)
-							        if (i % 2 === 0){
-							           return "#fff";
-							         }
-							        else {
-							           return "#c4c4c4";
-							         }
-							     }
-							    })
-*/
       .on('mouseover', function(d,i){
-      	console.log("Movuseover cells called")
-      	moused = 1; 
-      	//d3.select(this).style("background-color", "yellow");
-      	console.log(i)
                d3.selectAll('td.col_' + i).style('background-color', 'yellow');
             })
       .on('mouseout', function(d,i){
