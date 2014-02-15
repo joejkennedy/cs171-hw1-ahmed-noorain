@@ -36,7 +36,7 @@ text.text("Dec. 2013");
 		.data(["Unemployment Rates for States","Monthly Rankings","Seasonally Adjusted","Dec. 2013"])
 		.enter()
 		.append("caption")
-		.text(function(d) { return d })
+		.html(function(d) { return d })
 
 	var thead = table.append("thead")
 					.style("background-color", "#c4c4c4");

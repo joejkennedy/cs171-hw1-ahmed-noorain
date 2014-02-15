@@ -13,3 +13,6 @@ List all the styles (e.g. border width, text alignment, etc.) applied to the th 
 
 
 What differences do you notice between the DOM inspector and the HTML source? Why would you use the DOM inspector? Why is the HTML source useful?
+The source code reflects your HTML structure before any JavaScript is loaded. While the contents can’t be edited, it’s useful to see the HTML Safari receives from the server.
+
+The DOM tree is fully editable. Of course, your edits are temporary, so any changes you make are lost in a browser refresh. To save changes you make to the DOM tree, select the root html node and press Command-C, which copies the DOM structure to you clipboard as HTML.
