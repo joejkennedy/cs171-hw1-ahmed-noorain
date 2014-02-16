@@ -67,11 +67,11 @@
                   }
 
     var color = d3.scale.linear()
-    .domain([d3.min(data, function(d) { return d.Rate }), d3.max(data, function(d) { return d.Rate })])
-                        //.domain([3.6,10.0])
-                      //.domain([0, d3.selectAll("tbody tr")[0].length-1])
-                        .interpolate(d3.interpolateRgb)
-                        .range(["orangered", "silver"]);
+    .domain(
+      [d3.min(data, function(d) { return d.Rate }), 
+      d3.max(data, function(d) { return d.Rate })])
+    .interpolate(d3.interpolateRgb)
+    .range(["orangered", "silver"]);
 
 
       xScale.domain([min, max]);

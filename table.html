@@ -140,33 +140,33 @@ table{
 				}});
 				
 	var tbody = table.append("tbody");
-	var rows = tbody.selectAll("tr")
-      				.data(data.slice(1))
-      				.enter()
-  					.append("tr")
-  					.attr('class', function(d,i){ return "row_" + i; })
-  					.style("background-color", function(d, i) {
-					       if (i%2===0){
-					       	return "#fff";
-					       }else{
-					       	return "#c4c4c4";
-					       }
-					      })
-  					.on("mouseover", function(d,i){
-  						d3.selectAll('tr.row_' + i)
-  						.style('background-color', 'yellow');
-  					})
-  					.on("mouseout", function(d,i){ 
-						d3.selectAll("tr")
-						.style("background-color", 
-							function(d, i) {
-								if (i%2===0){
-									return "#fff";
-								}else{
-									return "#c4c4c4";
-								}
-					    })
-					    });
+	var rows = 
+		tbody.selectAll("tr")
+      		.data(data.slice(1))
+      		.enter()
+  			.append("tr")
+  			.attr('class', function(d,i){ return "row_" + i; })
+  			.style("background-color", function(d, i) {
+				if (i%2===0){
+					return "#fff";
+				}else{
+					return "#c4c4c4";
+				}
+			})
+  			.on("mouseover", function(d,i){
+  				d3.selectAll('tr.row_' + i)
+  					.style('background-color', 'yellow');
+  				})
+  			.on("mouseout", function(d,i){ 
+			d3.selectAll("tr")
+				.style("background-color", 
+					function(d, i) {
+						if (i%2===0){
+							return "#fff";
+						}else{
+							return "#c4c4c4";
+						}})
+			});
 	
 	var moused = 0; 
 	
@@ -232,22 +232,17 @@ table{
     rows.insert("td")
 		.attr('class', function(d,i){ return "col_" + 3; })
 		.on('mouseover', function(d,i){
-			console.log(i)
-      			//if(i != 2){
-
-               d3.selectAll('td.col_' + 3)
-           		.style('background-color', 'yellow');
-           	//}
-      		
-            })
+			d3.selectAll('td.col_' + 3)
+			.style('background-color', 'yellow');
+		})
       .on('mouseout', function(d,i){
-                    d3.selectAll('td.col_' + 3)
-                    .style('background-color', null);
-					d3.selectAll('td.col_' + 2)
-					.style("background-color", function(d, i) {
-						return color(d);
-					})
-				})
+      	d3.selectAll('td.col_' + 3)
+      	.style('background-color', null);
+      	d3.selectAll('td.col_' + 2)
+      	.style("background-color", function(d, i) {
+      		return color(d);
+      	})
+      })
 	.append("svg")
    	.attr("width", 20)
    	.attr("height", 10)
@@ -280,7 +275,7 @@ table{
 		})
 		sorted_asc = 1; 
 		d3.select("table")
-			.style("cursor", "s-resize");
+			.style("cursor", "n-resize");
 	}
 
 	initial_load();
